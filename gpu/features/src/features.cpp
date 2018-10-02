@@ -122,6 +122,43 @@ void pcl::gpu::NormalEstimation::compute(Normals& normals)
     }    
 }
 
+/////////////////////////////////////////////////////////////////////////
+/// DifferenceOfNormalsEstimation
+
+pcl::gpu::DifferenceOfNormalsEstimation::DifferenceOfNormalsEstimation() {}
+
+void pcl::gpu::DifferenceOfNormalsEstimation::computeDifference(const PointCloud& cloud, const NeighborIndices& nn_indices, const Normals& small_normals, const Normals& large_normals, PointCloud& difference)
+{       
+    difference.create(cloud.size());    
+
+    const device::PointCloud& c = (const device::PointCloud&)cloud;
+    const device::Normals& small = (const device::Normals&)small_normals;
+    const device::Normals& large = (const device::Normals&)large_normals;
+    const device::PointCloud& d = (const device::Normals&)difference;
+
+    device::computeDifference(c, nn_indices, small, large, d); 
+}
+
+void pcl::gpu::DifferenceOfNormalEstimation::compute(Normals& small_normals, Normals& large_normals, PointCloud& output)
+{
+    assert(!cloud_.empty());
+
+    PointCloud& surface = surface_.empty() ? cloud_ : surface_;
+
+    octree_.setCloud(surface);
+    octree_.build();
+
+    if (indices_.empty() || (!indices_.empty() && indices_.size() == cloud_.size()))
+    {
+        octree_.radiusSearch(cloud_, radius_, max_results_, nn_indices_);        
+    }
+    else
+    {
+        octree_.radiusSearch(cloud_, indices_, radius_, max_results_, nn_indices_);
+    }    
+
+    computeDifference(surface, nn_indices_, small_normals, large_normals, output);
+}
 
 /////////////////////////////////////////////////////////////////////////
 /// PFHEstimation

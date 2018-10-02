@@ -337,13 +337,13 @@ void pcl::device::OctreeImpl::nearestKSearchBatch(const Queries& queries, int /*
     batch.points = points_sorted;
     batch.points_step = points_sorted.step()/points_sorted.elem_size;
 
-    cudaSafeCall( cudaFuncSetCacheConfig(pcl::device::knn_search::KernelKNN, cudaFuncCachePreferL1) );    
+    cudaFuncSetCacheConfig(pcl::device::knn_search::KernelKNN, cudaFuncCachePreferL1);    
 
     int block = pcl::device::knn_search::KernelPolicy::CTA_SIZE;
     int grid = (batch.queries_num + block - 1) / block;        
 
     pcl::device::knn_search::KernelKNN<<<grid, block>>>(batch);
-    cudaSafeCall( cudaGetLastError() );
-    cudaSafeCall( cudaDeviceSynchronize() );
+    cudaGetLastError();
+    cudaDeviceSynchronize();
 }
 

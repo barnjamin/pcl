@@ -37,8 +37,10 @@
 #include <pcl/gpu/containers/device_memory.h>
 #include <pcl/gpu/utils/safe_call.hpp>
 
+#include <stdio.h>
 #include "cuda_runtime_api.h"
 #include "assert.h"
+
 
 #define HAVE_CUDA
 //#include <pcl_config.h>
@@ -145,7 +147,6 @@ void pcl::gpu::DeviceMemory::create(size_t sizeBytes_arg)
             release();
 
         sizeBytes_ = sizeBytes_arg;
-                        
         cudaSafeCall( cudaMalloc(&data_, sizeBytes_) );
         
         //refcount_ = (int*)cv::fastMalloc(sizeof(*refcount_));

@@ -60,7 +60,6 @@ pcl::gpu::extractEuclideanClusters (const boost::shared_ptr<pcl::PointCloud<pcl:
     max_answers = host_cloud_->points.size();
   else
     max_answers = max_pts_per_cluster;
-  std::cout << "Max_answers: " << max_answers << std::endl;
 
   // to store the current cluster
   pcl::PointIndices r;
@@ -100,9 +99,8 @@ pcl::gpu::extractEuclideanClusters (const boost::shared_ptr<pcl::PointCloud<pcl:
       std::vector<int> sizes, data;
 
       // if the number of queries is not high enough implement search on Host here
-      if(queries_host.size () <= 10) ///@todo: adjust this to a variable number settable with method
+      if (false)//(queries_host.size () <= 10) ///@todo: adjust this to a variable number settable with method
       {
-        std::cout << " CPU: ";
         for(size_t p = 0; p < queries_host.size (); p++)
         {
           // Execute the radiusSearch on the host
@@ -132,7 +130,6 @@ pcl::gpu::extractEuclideanClusters (const boost::shared_ptr<pcl::PointCloud<pcl:
       // If number of queries is high enough do it here
       else
       {
-        std::cout << " GPU: ";
         // Copy buffer
         queries_device = DeviceArray<PointXYZ>(queries_device_buffer.ptr(),queries_host.size());
         // Move queries to GPU
@@ -159,8 +156,6 @@ pcl::gpu::extractEuclideanClusters (const boost::shared_ptr<pcl::PointCloud<pcl:
           }
         }
       }
-      std::cout << " data.size: " << data.size() << " foundpoints: " << found_points << " previous: " << previous_found_points;
-      std::cout << " new points: " << found_points - previous_found_points << " next queries size: " << queries_host.size() << std::endl;
     }
     while (previous_found_points < found_points);
     // If this queue is satisfactory, add to the clusters
@@ -201,7 +196,6 @@ pcl::gpu::EuclideanClusterExtraction::extract (std::vector<pcl::PointIndices> &c
 */
   // Extract the actual clusters
   extractEuclideanClusters (host_cloud_, tree_, cluster_tolerance_, clusters, min_pts_per_cluster_, max_pts_per_cluster_);
-  std::cout << "INFO: end of extractEuclideanClusters " << std::endl;
   // Sort the clusters based on their size (largest one first)
   //std::sort (clusters.rbegin (), clusters.rend (), comparePointClusters);
 }

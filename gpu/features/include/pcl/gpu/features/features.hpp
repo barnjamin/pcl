@@ -110,6 +110,19 @@ namespace pcl
         };        
 
         ////////////////////////////////////////////////////////////////////////////////////////////  
+        /** \brief @b Class for difference of normals estimation.  */
+        class PCL_EXPORTS DifferenceOfNormalsEstimation : public Feature
+        {
+        public:
+            DifferenceOfNormalsEstimation();
+            void compute(const Normals& small_normals, const Normals& large_normals, PointCloud& difference);
+
+            static void computeDifference(const PointCloud& cloud, const NeighborIndices& nn_indices, const Normals& small_normals, const Normals& large_normals, PointCloud& difference);
+        private:              
+            NeighborIndices nn_indices_;
+        };        
+
+        ////////////////////////////////////////////////////////////////////////////////////////////  
         /** \brief @b Class for PFH estimation.  */
         class PCL_EXPORTS PFHEstimation : public FeatureFromNormals
         {

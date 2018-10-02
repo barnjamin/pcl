@@ -365,14 +365,14 @@ void pcl::device::OctreeImpl::radiusSearchEx(BatchType& batch, const Queries& qu
     batch.points = points_sorted;
     
     
-    cudaSafeCall( cudaFuncSetCacheConfig(KernelRS<BatchType>, cudaFuncCachePreferL1) );
+    cudaFuncSetCacheConfig(KernelRS<BatchType>, cudaFuncCachePreferL1);
 
     int block = KernelPolicy::CTA_SIZE;
     int grid = divUp((int)batch.queries.size, block);
 
     KernelRS<<<grid, block>>>(batch);
-    cudaSafeCall( cudaGetLastError() );
-    cudaSafeCall( cudaDeviceSynchronize() );
+    cudaGetLastError();
+    cudaDeviceSynchronize();
 }
 
 

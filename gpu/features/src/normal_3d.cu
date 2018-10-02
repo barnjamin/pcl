@@ -41,6 +41,7 @@
 #include "pcl/gpu/utils/device/funcattrib.hpp"
 
 #include "pcl/gpu/features/device/eigen.hpp"
+#include <stdio.h>
 
 using namespace pcl::gpu;
 
@@ -160,6 +161,7 @@ namespace pcl
 
                     NormalType output;
                     output.w = curvature;
+                    //printf("Curvature of %.5f\n", output.w);
 
                     // The normalization is not necessary, since the eigenvectors from Eigen33 are already normalized
                     output.x = evecs[0].x;
@@ -179,7 +181,7 @@ namespace pcl
 
         };
 
-        __global__ void EstimateNormaslKernel(const NormalsEstimator est) { est(); }
+        __global__ void EstimateNormalsKernel(const NormalsEstimator est) { est(); }
 
 
         struct FlipNormal
@@ -245,10 +247,12 @@ void pcl::device::computeNormals(const PointCloud& cloud, const NeighborIndices&
 
     int block = NormalsEstimator::CTA_SIZE;
     int grid = divUp((int)normals.size(), NormalsEstimator::WAPRS);
-    EstimateNormaslKernel<<<grid, block>>>(est);
+    EstimateNormalsKernel<<<grid, block>>>(est);
 
     cudaSafeCall( cudaGetLastError() );        
     cudaSafeCall(cudaDeviceSynchronize());
+
+    //printf("hi there %d\n", *normals);
 }
 
 void pcl::device::flipNormalTowardsViewpoint(const PointCloud& cloud, const float3& vp, Normals& normals)

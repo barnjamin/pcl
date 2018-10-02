@@ -48,7 +48,14 @@
 #include <thrust/sequence.h>
 #include <thrust/sort.h>
 #include <thrust/reduce.h>
-#include <thrust/device_ptr.h>
+
+#include <thrust/host_vector.h>
+#include <thrust/device_vector.h>
+#include <thrust/generate.h>
+#include <thrust/reduce.h>
+#include <thrust/functional.h>
+#include <algorithm>
+#include <cstdlib>
 
 using namespace pcl::gpu;
 using namespace thrust;
@@ -396,9 +403,9 @@ void pcl::device::OctreeImpl::build()
     ssb.points_number = (int)codes.size();
     //printFuncAttrib(singleStepKernel);
 
-    cudaSafeCall( cudaFuncSetCacheConfig(singleStepKernel, cudaFuncCachePreferL1) );
+    cudaFuncSetCacheConfig(singleStepKernel, cudaFuncCachePreferL1);
 
     singleStepKernel<<<GRID_SIZE, CTA_SIZE>>>(ssb);
-    cudaSafeCall( cudaGetLastError() );
-    cudaSafeCall( cudaDeviceSynchronize() );
+    cudaGetLastError();
+    cudaDeviceSynchronize();
 }
