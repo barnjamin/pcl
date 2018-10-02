@@ -134,12 +134,12 @@ void pcl::gpu::DifferenceOfNormalsEstimation::computeDifference(const PointCloud
     const device::PointCloud& c = (const device::PointCloud&)cloud;
     const device::Normals& small = (const device::Normals&)small_normals;
     const device::Normals& large = (const device::Normals&)large_normals;
-    const device::PointCloud& d = (const device::Normals&)difference;
+    device::PointCloud& d = (device::PointCloud&)difference;
 
     device::computeDifference(c, nn_indices, small, large, d); 
 }
 
-void pcl::gpu::DifferenceOfNormalEstimation::compute(Normals& small_normals, Normals& large_normals, PointCloud& output)
+void pcl::gpu::DifferenceOfNormalsEstimation::compute(const Normals& small_normals, const Normals& large_normals, PointCloud& output)
 {
     assert(!cloud_.empty());
 

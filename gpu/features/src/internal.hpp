@@ -109,6 +109,9 @@ namespace pcl
         void flipNormalTowardsViewpoint(const PointCloud& cloud, const float3& vp, Normals& normals);        
         void flipNormalTowardsViewpoint(const PointCloud& cloud, const Indices& indices, const float3& vp, Normals& normals);
 
+        // difference of normals estimation
+        void computeDifference(const PointCloud& cloud, const NeighborIndices& nn_indices, const Normals& small_normals, const Normals& large_normals, PointCloud& difference);
+
         // pfh estimation        
         void repackToAosForPfh(const PointCloud& cloud, const Normals& normals, const NeighborIndices& neighbours, DeviceArray2D<float>& data_rpk, int& max_elems_rpk);
         void computePfh125(const DeviceArray2D<float>& data_rpk, int max_elems_rpk, const NeighborIndices& neighbours, DeviceArray2D<PFHSignature125>& features);
